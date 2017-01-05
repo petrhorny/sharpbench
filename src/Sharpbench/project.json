@@ -1,0 +1,16 @@
+{
+  "version": "1.0.0-*",
+
+  "dependencies": {
+    "BenchmarkHost": "1.0.0-*",
+    "Microsoft.Net.Compilers.netcore": "2.0.0-rc2",
+    "Microsoft.CodeAnalysis.Scripting": "2.0.0-rc2",
+    "NETStandard.Library": "1.6.0"
+  },
+
+  "frameworks": {
+    "netcoreapp1.0": {
+      "imports": "dnxcore50"
+    }
+  }
+}

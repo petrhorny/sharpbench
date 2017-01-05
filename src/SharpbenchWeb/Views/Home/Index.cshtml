@@ -1,0 +1,42 @@
+﻿@model SharpbenchWeb.Models.BenchmarkModel
+@{
+    ViewData["Title"] = "Home Page";
+}
+
+<div>
+    index
+    <div id="editor1">@Model.SourceCode1</div>
+    <hr />
+    <div id="editor2">@Model.SourceCode2</div>
+    <hr />
+    
+    @using (Html.BeginForm("RunBenchmark", "Home"))
+    {
+        @Html.Hidden("sourceCode1", "")
+        @Html.Hidden("sourceCode2", "")
+        <input type="submit" value="Run" />
+    }
+    
+</div>
+
+<div id="update-container">
+</div>
+
+@section scripts
+{
+    <script type="text/javascript">
+        
+        var editor1 = ace.edit("editor1");
+        editor1.setTheme("ace/theme/chrome");
+        editor1.getSession().setMode("ace/mode/csharp");
+
+        var editor2 = ace.edit("editor2");
+        editor2.setTheme("ace/theme/chrome");
+        editor2.getSession().setMode("ace/mode/csharp");
+
+        $("form").submit(function() {
+            $("#sourceCode1").val(editor1.getValue());
+            $("#sourceCode2").val(editor2.getValue());
+        });
+    </script>
+}

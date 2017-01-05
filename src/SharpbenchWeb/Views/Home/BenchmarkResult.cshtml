@@ -1,0 +1,13 @@
+﻿@model SharpbenchWeb.Models.BenchmarkModel
+
+<pre><code>@Model.SourceCode1</code></pre>
+<br />
+@Model.BenchmarkResponse.Source1Ratio
+
+<pre><code>@Model.SourceCode2</code></pre>
+<br />
+@Model.BenchmarkResponse.Source2Ratio
+<br />
+<pre>@Model.BenchmarkResponse.Error</pre>
+<br />
+@Html.ActionLink("Edit", "Index", "Home")
