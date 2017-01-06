@@ -1,13 +1,20 @@
 ﻿@model SharpbenchWeb.Models.BenchmarkModel
 
-<pre><code>@Model.SourceCode1</code></pre>
-<br />
-@Model.BenchmarkResponse.Source1Ratio
-
-<pre><code>@Model.SourceCode2</code></pre>
-<br />
-@Model.BenchmarkResponse.Source2Ratio
-<br />
-<pre>@Model.BenchmarkResponse.Error</pre>
-<br />
+<table>    
+    @for (var row = 0; row < Model.BenchmarkData.Rows; row++)
+    {
+        <tr>
+            @for (var column = 0; column < Model.BenchmarkData.Columns; column++)
+            {
+                <td>
+                    @Model.BenchmarkResponse.GetRatio(row, column, r => r.ElapsedTimeTicks)
+                </td>
+            }
+        </tr>
+    }
+</table>
+@if (!Model.BenchmarkResponse.Success)
+{
+    <pre>@Model.BenchmarkResponse.GetErrors()</pre>
+}
 @Html.ActionLink("Edit", "Index", "Home")

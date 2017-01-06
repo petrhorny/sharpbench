@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc;
 using Sharpbench;
 using SharpbenchWeb.Models;
 
@@ -29,21 +30,42 @@ namespace SharpbenchWeb.Controllers
         {
             return View();
         }
-
-        public IActionResult RunBenchmark(string sourceCode1, string sourceCode2)
+        [HttpPost]
+        public IActionResult RunBenchmark(FormData formData)
         {
             var model = BenchmarkModel.Instance;
-            model.SourceCode1 = sourceCode1;
-            model.SourceCode2 = sourceCode2;
-            var benchmarkProcessor = new BenchmarkProcessor();
-            var request = new BenchmarkRequest();
-            request.SourceCode1 = sourceCode1;
-            request.SourceCode2 = sourceCode2;
-            var response = benchmarkProcessor.Benchmark(request);
+            for (var row = 0; row < formData.SourceCode.Length; row++)
+            {
+                for (var column = 0; column < formData.SourceCode[row].Length; column++)
+                {
+                    var sourceCode = formData.SourceCode[row][column];
+                    model.BenchmarkData.SetSourceCode(row, column, sourceCode);
+                }
+            }
+            
+            var benchmarkProcessor = new BenchmarkProcessor();            
+            var response = benchmarkProcessor.Benchmark(model.BenchmarkData);
             model.BenchmarkResponse = response;
-
             return View("BenchmarkResult", model);
         }        
         
+        public class FormData
+        {
+            public string [][] SourceCode { get; set; }
+        }
+
+        public IActionResult AddRow()
+        {
+            var model = BenchmarkModel.Instance;
+            model.BenchmarkData.AddRow();
+            return RedirectToAction("Index");
+        }
+
+        public IActionResult AddColumn()
+        {
+            var model = BenchmarkModel.Instance;
+            model.BenchmarkData.AddColumn();
+            return RedirectToAction("Index");
+        }
     }
 }

@@ -3,40 +3,53 @@
     ViewData["Title"] = "Home Page";
 }
 
+
 <div>
-    index
-    <div id="editor1">@Model.SourceCode1</div>
-    <hr />
-    <div id="editor2">@Model.SourceCode2</div>
-    <hr />
-    
     @using (Html.BeginForm("RunBenchmark", "Home"))
     {
-        @Html.Hidden("sourceCode1", "")
-        @Html.Hidden("sourceCode2", "")
+        <table>                        
+            @for (var row = 0; row < Model.BenchmarkData.Rows; row++)
+            {
+                <tr>
+                    @for (var column = 0; column < Model.BenchmarkData.Columns; column++)
+                    {
+                        var key = row + "_" + column;
+                        <td>
+                            <div id="editor_@key">@Model.BenchmarkData.GetSourceCode(row, column)</div>
+                            <input type="hidden" id="hidden_@key" name="formData.SourceCode[@row][@column]"/>
+                            <script type="text/javascript">
+                                $(function() {
+                                    var editor = ace.edit("editor_@key");
+                                    editor.setTheme("ace/theme/chrome");
+                                    editor.getSession().setMode("ace/mode/csharp");
+                                    $("#hidden_@(key)").data("editor", editor);
+                                });
+                            </script>
+                        </td>
+                    }
+                    @if (row == 0)
+                    {
+                        <td rowspan="@Model.BenchmarkData.Rows">@Html.ActionLink("Add column", "AddColumn")</td>
+                    }
+                </tr>
+            }
+            <tr><td colspan="@Model.BenchmarkData.Columns">@Html.ActionLink("Add row", "AddRow")</td></tr>
+        </table>
+
         <input type="submit" value="Run" />
     }
-    
 </div>
 
-<div id="update-container">
-</div>
 
 @section scripts
 {
     <script type="text/javascript">
         
-        var editor1 = ace.edit("editor1");
-        editor1.setTheme("ace/theme/chrome");
-        editor1.getSession().setMode("ace/mode/csharp");
-
-        var editor2 = ace.edit("editor2");
-        editor2.setTheme("ace/theme/chrome");
-        editor2.getSession().setMode("ace/mode/csharp");
-
-        $("form").submit(function() {
-            $("#sourceCode1").val(editor1.getValue());
-            $("#sourceCode2").val(editor2.getValue());
+        $("form").submit(function () {            
+            $("input[type=hidden]", $(this)).each(function () {
+                var editor = $(this).data("editor");
+                $(this).val(editor.getValue());
+            });            
         });
     </script>
 }

@@ -10,14 +10,14 @@ namespace SharpbenchWeb.Models
     public class BenchmarkModel
     {
         public static readonly BenchmarkModel Instance = new BenchmarkModel(); 
-        public string SourceCode1 { get; set; }
-        public string SourceCode2 { get; set; }
+        public BenchmarkData BenchmarkData { get; private set; }
         public BenchmarkResponse BenchmarkResponse { get; set; }
 
         public BenchmarkModel()
         {
-            SourceCode1 = "var x = \"abc\" + \"def\";";
-            SourceCode2 = "var x = string.Format(\"{0}{1}\", \"abc\", \"def\");";
+            BenchmarkData = new BenchmarkData();
+            BenchmarkData.SetSourceCode(0, 0, "var x = \"abc\" + \"def\";");
+            BenchmarkData.SetSourceCode(0, 1, "var x = string.Format(\"{0}{1}\", \"abc\", \"def\");");            
         }
     }
 }

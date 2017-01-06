@@ -13,7 +13,7 @@ namespace BenchmarkHost
             try
             {
                 if (args.Length < 2) throw new Exception("To few arguments");
-                var durationSeconds = int.Parse(args[0]);                
+                var durationSeconds = int.Parse(args[0]);
                 var outputFileName = args[1];
                 Console.WriteLine($"Duration: {durationSeconds} seconds");
 
@@ -169,6 +169,13 @@ namespace BenchmarkHost
         public string Error { get; set; }
         public bool Success => string.IsNullOrEmpty(Error);
         public double IterationsPerSecond => Iterations / ElapsedTime.TotalSeconds;
+
+        public double GetValuePerIteration(Func<BenchmarkResult, double> valueFunc)
+        {
+            var value = valueFunc(this);
+            var result = value / Iterations;
+            return result;
+        }
 
         public void Serialize(string fileName)
         {

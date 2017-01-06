@@ -11,3 +11,4 @@ textarea { max-width: 280px; }
 
 
 .ace_editor { height: 100px; }
+table { width: 100%; table-layout: fixed; }

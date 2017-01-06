@@ -9,6 +9,8 @@ using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Scripting;
 using Microsoft.CodeAnalysis.Scripting;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Serialization;
 using NUnit.Framework;
 
 namespace SharpbenchTest
@@ -19,34 +21,20 @@ namespace SharpbenchTest
     [TestFixture]
     public class Playground
     {
-        [Test]
-        public void ManualTest()
+        private class Foo
         {
-            var code = @"
-var x = System.DateTime.Now.Ticks;
-return x;";
-                    
-            var script =  CSharpScript.Create(code, ScriptOptions.Default);
-            var compilation = script.GetCompilation();
-            //var options = new CSharpCompilationOptions(OutputKind.);
-            //var compilation = CSharpCompilation.CreateScriptCompilation("Assembly1", syntaxTree, options: options);
-            var diag = compilation.GetDiagnostics();
-            var success = compilation.Emit(@"c:\temp\pokus.dll");
+            public string PublicValue { get; set; }
+            public string PrivateValue { get; internal set; }
         }
 
         [Test]
-        public void ManualTest2()
+        public void ManualTest()
         {
-            var assembly = AssemblyLoadContext.Default.LoadFromAssemblyPath(@"c:\temp\pokus.dll");            
-            var myType = assembly.GetType("Submission#0");
-            var myInstance = Activator.CreateInstance(myType, new object[] {new object[2]});
-            var x= myInstance.GetType().GetMethods();
-            var mi = myInstance.GetType().GetMethod("<Initialize>");
-            var task = (Task<object>)mi.Invoke(myInstance, null);
-            var res = task.Result;
-            Thread.Sleep(10);
-            var res2 = task.Result;
-            //var assembly = Assembly.Load(new AssemblyName(@"file://c:/temp/pokus.dll"));
-        }
+            var obj = new Foo();
+            obj.PublicValue = "public";
+            obj.PrivateValue = "private";
+            var json = JsonConvert.SerializeObject(obj);            
+            var foo2 = JsonConvert.DeserializeObject<Foo>(json);
+        }     
     }
 }
